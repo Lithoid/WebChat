@@ -1,0 +1,101 @@
+﻿@model IEnumerable<BL.MessageViewModel>
+
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+@foreach (var item in Model)
+{
+    <div class="chat-message-right pb-4">
+        <div>
+            <div class="text-muted small text-nowrap mt-2">@item.DateCreated</div>
+        </div>
+        <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+            <div class="font-weight-bold mb-1">@item.UserName</div>
+            @item.Text
+        </div>
+    </div>
+      
+}
+<form onsubmit="sendMessage(event)">
+    <div class="flex-grow-0 py-3 px-4 border-top">
+        <div class="input-group">
+            @Html.Editor("message", new { htmlAttributes = new { @class = "form-control" ,@placeholder="Type...", @id =
+            "message"} })
+            <input type="hidden" name="groupId" value="@ViewBag.ChatId">
+
+
+            <button type="submit" class="btn btn-primary" value="Send">Send</button>
+        </div>
+    </div>
+</form>
+
+
+@section scripts{
+    <script src="~/js/signalr.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .build()
+
+        var _connectionId = '';
+        //SUDA SMOTRI
+        connection.on("RecieveMessage", function (data) {
+            console.log(data)
+            var message = document.createElement("div")
+            
+
+        })
+
+
+        var joinGroup = function () {
+            var url = '/Message/JoinGroup/' + _connectionId + '/@ViewBag.ChatId'
+            axios.post(url, null)
+                .then(res => {
+                    console.log("Group joined", res)
+                })
+                .catch(err => {
+                    console.log("Failed to join", err)
+                })
+        }
+
+        connection.start()
+            .then(function () {
+                connection.invoke('getConnectionId')
+                    .then(function (connectionId) {
+                        _connectionId = connectionId
+                        joinGroup();
+
+                    })
+
+            })
+            .catch(function (err) {
+                console.log(err)
+            })
+
+
+
+        var sendMessage = function (event) {
+            event.preventDefault();
+            var data = new FormData(event.target);
+
+            axios.post("/Message/SendMessage",data)
+                .then(res=>{
+                    console.log("Message sent")
+                })
+                .catch(err=>{
+                    console.log("Failed to send message")
+                })
+
+        }
+
+
+    </script>
+}

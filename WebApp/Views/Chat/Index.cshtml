@@ -1,0 +1,10 @@
+﻿@model IEnumerable<BL.ChatViewModel>
+
+
+
+
+@foreach (var item in Model)
+{
+    <p><a class="" asp-action="JoinChat" asp-controller="Chat" asp-route-chatId="@item.Id">@item.ChatName</a></p>
+
+    }
