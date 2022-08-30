@@ -76,14 +76,39 @@ namespace BL
                 .Select(o => new ChatViewModel(o));
         }
 
-        public static IQueryable<ChatViewModel> GetChatList(IChatRepository repository, bool privacy = false)
+        public static IQueryable<ChatViewModel> GetChatList(IChatRepository repository, bool privacy = false,string name="")
         {
-            return (repository.AllItems as DbSet<Chat>)
+            if (String.IsNullOrEmpty(name))
+            {
+                return (repository.AllItems as DbSet<Chat>)
                 .Where(c => c.IsPrivate == privacy)
                 .Include(o => o.Users)
                 .Include(o => o.Messages)
                 .Select(o => new ChatViewModel(o));
+            }else
+            {
+                return (repository.AllItems as DbSet<Chat>)
+                .Where(c => c.IsPrivate == privacy)
+                .Include(o => o.Users)
+                .Include(o => o.Messages)
+                .Select(o => new ChatViewModel(o));
+            }
+            
         }
+
+
+        
+
+        public static ChatViewModel GetPrivateChatWith(IChatRepository repository, Guid thisId,Guid thatId)
+        {
+            return (repository.AllItems as DbSet<Chat>)
+                .Where(c => c.Users.Any(u=>u.Id== thisId) && c.Users.Any(u => u.Id == thatId) && c.Users.Count==2)
+                .Include(o => o.Users)
+                .Include(o => o.Messages)
+                .Select(o => new ChatViewModel(o))
+                .FirstOrDefault();
+        }
+
         public async Task AddUserToChat(IChatRepository repository, Guid userId)
         {
             this.UserIds.Add(userId);
@@ -93,6 +118,25 @@ namespace BL
 
 
         }
+        public async Task RemoveUserFromChat(IChatRepository repository, Guid userId)
+        {
+            this.UserIds.Remove(userId);
+            var chat = this;
+            if (chat.IsPrivate)
+            {
+                await repository.DeleteItemAsync(chat.Id);
+            }
+            else
+            {
+               
+                await repository.DeleteItemAsync(chat.Id);
+                await repository.AddItemAsync(chat);
+            }
+            
+
+
+        }
+
 
     }
 }

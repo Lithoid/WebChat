@@ -1,0 +1,11 @@
+﻿@using Entities
+
+@model IEnumerable<AppUser>
+
+
+
+@foreach (var item in Model)
+{
+    <p><a class="" asp-action="CreatePrivateChat" asp-controller="Chat" asp-route-userId="@item.Id">@item.UserName</a></p>
+
+}

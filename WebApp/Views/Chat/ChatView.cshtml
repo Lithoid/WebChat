@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BL.MessageViewModel>
+﻿@model WebApp.Models.IndexViewModel
 
 
 @*
@@ -8,29 +8,69 @@
 }
 
 
-@foreach (var item in Model)
+@foreach (var item in Model.Messages)
 {
     <div class="chat-message-right pb-4">
         <div>
             <div class="text-muted small text-nowrap mt-2">@item.DateCreated</div>
         </div>
         <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-            <div class="font-weight-bold mb-1">@item.UserName</div>
-            @item.Text
+            @if (User.Identity.Name == item.UserName)
+            {
+
+                <div onclick="replyToMessage(`@item.UserName`,`@item.Text`)" class="font-weight-bold mb-1">@item.UserName:</div>
+                <br>
+                @item.Text
+
+                <a asp-action="DeleteMessage" asp-route-messageId="@item.Id" asp-route-chatId="@item.ChatId"
+           class="btn btn-dark ml-10">Delete</a>
+                <a asp-action="EditMessage" asp-route-messageId="@item.Id" asp-route-chatId="@item.ChatId"
+           class="btn btn-dark ml-10">Edit</a>
+            }
+            else
+            {
+
+                <a asp-action="CreatePrivateChat" asp-route-userId="@item.UserId" onclick="replyToMessage(`@item.UserName`,`@item.Text`)" class="font-weight-bold mb-1">@item.UserName:</a>
+
+                <br>
+                @item.Text
+            }
         </div>
     </div>
-      
+
 }
 <form onsubmit="sendMessage(event)">
     <div class="flex-grow-0 py-3 px-4 border-top">
         <div class="input-group">
-            @Html.Editor("message", new { htmlAttributes = new { @class = "form-control" ,@placeholder="Type...", @id =
+            @Html.TextArea("message", new { htmlAttributes = new { @class = "form-control",@style="width: 80%" ,@placeholder="Type...", @id =
             "message"} })
             <input type="hidden" name="groupId" value="@ViewBag.ChatId">
 
 
             <button type="submit" class="btn btn-primary" value="Send">Send</button>
         </div>
+        @if (Model.PageViewModel.HasPreviousPage)
+        {
+            <a asp-action="ChatView"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+           asp-route-chatId="@ViewBag.ChatId"
+           class="btn btn-outline-dark">
+                <i class="glyphicon glyphicon-chevron-left"></i>
+                Backward
+            </a>
+        }
+        @if (Model.PageViewModel.HasNextPage)
+        {
+            <a asp-action="ChatView"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+           asp-route-chatId="@ViewBag.ChatId"
+           class="btn btn-outline-dark">
+                Forward
+                <i class="glyphicon glyphicon-chevron-right"></i>
+            </a>
+        }
+
+
     </div>
 </form>
 
@@ -41,6 +81,11 @@
 
     <script>
 
+
+        var replyToMessage = function (userName, text) {
+            $("#message").val('(To: ' + '\n' + userName + '\n' + 'On: ' + text + ')\n');
+        }
+
         var connection = new signalR.HubConnectionBuilder()
             .withUrl("/chatHub")
             .build()
@@ -48,9 +93,9 @@
         var _connectionId = '';
         //SUDA SMOTRI
         connection.on("RecieveMessage", function (data) {
-            console.log(data)
-            var message = document.createElement("div")
-            
+            console.log(123123)
+            document.location.reload();
+
 
         })
 
@@ -86,11 +131,11 @@
             event.preventDefault();
             var data = new FormData(event.target);
 
-            axios.post("/Message/SendMessage",data)
-                .then(res=>{
+            axios.post("/Message/SendMessage", data)
+                .then(res => {
                     console.log("Message sent")
                 })
-                .catch(err=>{
+                .catch(err => {
                     console.log("Failed to send message")
                 })
 

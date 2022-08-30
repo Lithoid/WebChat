@@ -4,6 +4,7 @@ using Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WebApp.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    partial class AppDataContextModelSnapshot : ModelSnapshot
+    [Migration("20220828161822_mig3")]
+    partial class mig3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,8 +54,8 @@ namespace WebApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("df0b8976-bb3d-47db-b225-077a1efcea08"),
-                            ConcurrencyStamp = "92d1bc3b-c785-4373-863e-52ca3ee00947",
+                            Id = new Guid("11b1f9d7-ec46-4333-910b-3b9c7f9c1d35"),
+                            ConcurrencyStamp = "1a5bfafe-5586-460e-bafd-34ff8df1c65c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -155,23 +157,23 @@ namespace WebApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e32da348-4603-49d0-be51-be9890a768bd"),
+                            Id = new Guid("f71302bd-2bda-4746-b2c8-a8cf06a8fc61"),
                             ChatName = "Some chat",
-                            DateCreated = new DateTime(2022, 8, 30, 14, 15, 54, 790, DateTimeKind.Local).AddTicks(6394),
+                            DateCreated = new DateTime(2022, 8, 28, 19, 18, 22, 519, DateTimeKind.Local).AddTicks(930),
                             IsPrivate = false
                         },
                         new
                         {
-                            Id = new Guid("937411f3-1c36-4122-aeea-75ecd6e38e0e"),
+                            Id = new Guid("71934da2-ad32-481b-8d0a-be88249c416a"),
                             ChatName = "Group chat",
-                            DateCreated = new DateTime(2022, 8, 30, 14, 15, 54, 790, DateTimeKind.Local).AddTicks(6428),
+                            DateCreated = new DateTime(2022, 8, 28, 19, 18, 22, 519, DateTimeKind.Local).AddTicks(964),
                             IsPrivate = false
                         },
                         new
                         {
-                            Id = new Guid("727f967f-7d1e-4ef9-a711-664e849b10ea"),
+                            Id = new Guid("fe30b894-7984-4027-ba7c-c2748421a515"),
                             ChatName = "Work chat",
-                            DateCreated = new DateTime(2022, 8, 30, 14, 15, 54, 790, DateTimeKind.Local).AddTicks(6431),
+                            DateCreated = new DateTime(2022, 8, 28, 19, 18, 22, 519, DateTimeKind.Local).AddTicks(967),
                             IsPrivate = false
                         });
                 });

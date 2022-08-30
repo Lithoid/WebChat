@@ -56,7 +56,17 @@ namespace BL
                 .Where(c => c.ChatId==chatId)
                 .Include(o => o.User)
                 .Include(o => o.Chat)
+                .OrderBy(mess=>mess.DateCreated)
                 .Select(o => new MessageViewModel(o));
+        }
+        public static MessageViewModel GetMessageById(IMessageRepository repository, Guid id)
+        {
+            return (repository.AllItems as DbSet<Message>)
+                .Where(o => o.Id == id)
+                .Include(o => o.User)
+                .Include(o => o.Chat)
+                .Select(o => new MessageViewModel(o))
+                .FirstOrDefault();
         }
 
     }

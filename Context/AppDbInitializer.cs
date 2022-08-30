@@ -29,6 +29,24 @@ namespace Context
                     userManager.AddToRoleAsync(user, "Admin").Wait();
                 }
             }
+
+            if (userManager.FindByEmailAsync("member@gmail.com").Result == null)
+            {
+                AppUser user = new AppUser
+                {
+                    UserName = "member@gmail.com",
+                    Email = "member@gmail.com",
+                    EmailConfirmed = true,
+                };
+
+                IdentityResult result = userManager.CreateAsync(user, "Qwerty123*").Result;
+
+                if (result.Succeeded)
+                {
+
+                    userManager.AddToRoleAsync(user, "Admin").Wait();
+                }
+            }
         }
 
     }

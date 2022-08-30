@@ -15,7 +15,7 @@ namespace Entities
     public class Message:DbEntity
     {
         [Column("text")]
-        [MaxLength(32)]
+        [MaxLength(300)]
         public string Text { get; set; }
 
         [Column("dateCreated")]

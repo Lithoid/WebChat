@@ -60,7 +60,7 @@ namespace WebApp.Controllers
             await _messageRepository.AddItemAsync(mess);
 
             await _chat.Clients.Group(groupId.ToString())
-                .SendAsync("ReciveMessage",message);
+                .SendAsync("RecieveMessage",message);
             return Ok();
         }
     }
